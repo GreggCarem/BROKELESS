@@ -1,0 +1,80 @@
+.transaction {
+    position: absolute;
+    right: 0px;
+    display: flex;
+    background-color: #dadada;
+    width: 20rem;
+    height: 20rem;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15px;
+    margin-top: 0.3rem;
+    font-family: "Space Grotesk", sans-serif;
+    &-tittle {
+        font-size: 1.8rem;
+        font-weight: 500;
+        color: #333;
+        margin-bottom: 1rem;
+    }
+    &-form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    &-field {
+        display: flex;
+        align-items: baseline;
+        gap: 1.5rem;
+        &-1 {
+            display: flex;
+            gap: 3rem;
+        }
+
+        &-text {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 0.5rem;
+            width: 5rem;
+            height: 1.5rem;
+        }
+        &-input {
+            height: 1.2rem;
+            width: 6rem;
+            border-radius: 5px;
+            border: none;
+        }
+        &-btn {
+            border-radius: 5px;
+            border: none;
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: #333;
+            background-color: transparent;
+
+            &.active {
+                background-color: #9f9f9f;
+                border-radius: 5px;
+                border: none;
+                font-size: 1.5rem;
+                font-weight: 500;
+                color: #333;
+            }
+        }
+
+        &-btn-submit {
+            margin-top: 2rem;
+            background-color: transparent;
+            border-radius: 5px;
+            border: none;
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: #333;
+        }
+    }
+}

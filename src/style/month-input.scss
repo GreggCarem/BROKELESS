@@ -1,0 +1,14 @@
+.month-input {
+    color: #dadada;
+    border: none;
+    background: #333;
+    width: 10rem;
+    height: 1rem;
+    &:focus {
+        color: #dadada;
+        border: transparent;
+        background: #333;
+        width: 10rem;
+        height: 1rem;
+    }
+}

@@ -1,0 +1,149 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap");
+body {
+    background-color: #dadada;
+    font-family: "Space Grotesk", sans-serif;
+}
+
+.nav-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 5rem;
+
+    &-tittle {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #333;
+    }
+    &-logout {
+        font-size: 1.5rem;
+        font-weight: 700;
+        background-color: transparent;
+        color: #333;
+        border: none;
+        text-decoration: none;
+        transition: ease-in-out 0.3s;
+        &:hover {
+            color: #ffffff;
+            scale: 1.1;
+        }
+    }
+}
+
+.main-info {
+    // display: flex;
+    // align-items: center;
+    // justify-content: space-around;
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+    // flex-wrap: nowrap;
+    // flex-direction: row;
+
+    &-tittle {
+        font-size: 2.5rem;
+        font-weight: 500;
+        color: #333;
+        margin-bottom: -1rem;
+    }
+    &-subtitle {
+        font-size: 2.5rem;
+        font-weight: 500;
+        color: #333;
+    }
+    &-row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-around;
+
+        &-bc {
+            background-color: #333;
+        }
+    }
+    &-column {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.8rem;
+    }
+    &-month {
+        &-tittle {
+            font-size: 2.5rem;
+            font-weight: 500;
+            color: #333;
+            text-align: center;
+        }
+
+        &-box {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            margin-bottom: -2rem;
+            align-items: center;
+        }
+        &-box-2 {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+
+            align-items: center;
+        }
+        &-icon {
+            // margin-left: 1rem;
+            color: #333;
+            font-size: 1rem;
+            transition: transform 0.5s ease; // smooth rotation
+
+            &:hover {
+                transform: rotate(360deg);
+            }
+        }
+        &-btn {
+            background-color: transparent;
+            border: none;
+
+            transition: ease-in-out 0.3s;
+            &:hover {
+                scale: 1.5;
+            }
+        }
+    }
+}
+
+.monthly-input {
+    margin: auto;
+}
+
+.spendings {
+    background-color: #333;
+    color: #dadada;
+    min-height: 40rem;
+
+    &-header {
+        display: flex;
+        padding-top: 3rem;
+        align-items: baseline;
+        justify-content: space-between;
+        align-content: center;
+        padding: 1rem 2rem;
+
+        &-tittle {
+            font-size: 2.5rem;
+            font-weight: 500;
+        }
+
+        &-add {
+            color: #dadada;
+            font-size: 2.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        &-add-container-space {
+            color: transparent;
+            background-color: transparent;
+            border: none;
+        }
+    }
+}
