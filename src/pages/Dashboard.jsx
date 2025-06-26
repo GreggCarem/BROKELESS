@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import NewTransactions from "../components/NewTransactions";
 import "../style/dashboard.scss";
 import TransactionList from "../components/TransactionList";
@@ -7,59 +7,73 @@ import { faGear } from "@fortawesome/free-solid-svg-icons";
 import MonthInput from "../components/MonthInput";
 import { useAuth } from "../context/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
+import { collection, getDocs, where, query } from "firebase/firestore";
+import { db } from "../config/firebase";
 
 export default function Dashboard() {
   const [elementVisible, setElementVisible] = useState(false);
   const [monthInputVisibility, setmonthInputVisibility] = useState(false);
-  const [salary, setSalary] = useState();
+  const [salary, setSalary] = useState([]);
+  const [transactions, setTransactions] = useState([]);
+  const { currentUser } = useAuth();
 
-  const sampleTransactions = [
-    {
-      type: "expense",
-      label: "Groceries",
-      amount: 45.5,
-      createdAt: new Date("2024-06-12T10:00:00").getTime(),
-    },
-    {
-      type: "income",
-      label: "Freelance",
-      amount: 400,
-      createdAt: new Date("2024-06-13T14:30:00").getTime(),
-    },
-    {
-      type: "expense",
-      label: "Bar",
-      amount: 60,
-      createdAt: new Date("2024-06-14T21:00:00").getTime(),
-    },
-    {
-      type: "income",
-      label: "Gift",
-      amount: 100,
-      createdAt: new Date("2024-06-15T08:45:00").getTime(),
-    },
-  ];
+  const fetchExpenses = async () => {
+    if (!currentUser) return;
+    const q = query(
+      collection(db, "expense"),
+      where("uid", "==", currentUser.uid)
+    );
+    const snapshot = await getDocs(q);
+    const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    setTransactions(data);
+  };
 
-  // Filter transactions by type and calculate totals
-  const incomeTransactions = sampleTransactions.filter(
-    (tx) => tx.type === "income"
+  useEffect(() => {
+    fetchExpenses();
+  }, [currentUser]);
+
+  const monthlySalary = async () => {
+    if (!currentUser) return;
+    const q = query(
+      collection(db, "monthly_salary"),
+      where("uid", "==", currentUser.uid)
+    );
+    const snapshot = await getDocs(q);
+    const monthly_salary_data = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    console.log(monthly_salary_data);
+
+    setSalary(monthly_salary_data);
+  };
+
+  useEffect(() => {
+    monthlySalary();
+  }, [currentUser]);
+
+  const latestSalaryEntry = salary
+    .filter((tx) => tx.uid === currentUser.uid)
+    .sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis())[0];
+
+  const latestMonthlySalary = latestSalaryEntry?.monthlySalary || 0;
+
+  const incomeTransactions = transactions.filter(
+    (tx) => tx.type === "income" && tx.price !== undefined
   );
-  const expenseTransactions = sampleTransactions.filter(
-    (tx) => tx.type === "expense"
+  const expenseTransactions = transactions.filter(
+    (tx) => tx.type === "expense" && tx.price !== undefined
   );
 
-  const totalIncome = incomeTransactions.reduce(
-    (acc, tx) => acc + tx.amount,
-    0
-  );
+  const totalIncome = incomeTransactions.reduce((acc, tx) => acc + tx.price, 0);
   const totalExpense = expenseTransactions.reduce(
-    (acc, tx) => acc + tx.amount,
+    (acc, tx) => acc + tx.price,
     0
   );
   const balance = totalIncome - totalExpense;
 
   // Calculate balance, needs, wants, and savings
-  const monthlyIncome = salary;
+  const monthlyIncome = latestMonthlySalary;
 
   const needs = monthlyIncome * 0.5;
   const wants = monthlyIncome * 0.3;
@@ -152,10 +166,17 @@ export default function Dashboard() {
             >
               +
             </button>
-            {elementVisible ? <NewTransactions /> : null}
+            {elementVisible ? (
+              <NewTransactions
+                onSubmit={() => {
+                  fetchExpenses();
+                  setElementVisible(false);
+                }}
+              />
+            ) : null}
           </div>
         </div>
-        <TransactionList transactions={sampleTransactions} />
+        <TransactionList transactions={transactions} />
       </div>
     </div>
   );
