@@ -17,6 +17,7 @@ export default function Dashboard() {
   const [salary, setSalary] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const { currentUser } = useAuth();
+  
 
   const fetchExpenses = async () => {
     if (!currentUser) return;
@@ -112,12 +113,25 @@ export default function Dashboard() {
     loadUserData();
   }, []);
 
+
+  // Clock
+  let time  = new Date().toLocaleTimeString()
+
+  const [ctime,setTime] = useState(time)
+  const UpdateTime=()=>{
+    time =  new Date().toLocaleTimeString()
+    setTime(time)
+  }
+  setInterval(UpdateTime)
+ 
+
   return (
     <div className="dashboard-container">
       <nav className="nav-bar">
         <div className="nav-bar-left">
           <h1 className="nav-bar-tittle">BROKLESS</h1>
         </div>
+        <h1>{ctime}</h1>
 
         <div className="nav-bar-right">
           <button
@@ -193,6 +207,7 @@ export default function Dashboard() {
           <div className="main-info-column">
             <h2 className="main-info-tittle">NEEDS </h2>
             <h2 className="main-info-subtitle">{needs} EUR </h2>
+            <progress max={monthlyIncome} value={needs}></progress>
           </div>
           <div className="main-info-column">
             <h2 className="main-info-tittle">SAVINGS</h2>

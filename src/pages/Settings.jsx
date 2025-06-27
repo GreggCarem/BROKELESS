@@ -7,8 +7,15 @@ import { useAuth } from "../context/AuthContext";
 import "../style/settings.scss";
 import { db } from "../config/firebase";
 import { setDoc } from "firebase/firestore";
-import { Timestamp } from "firebase/firestore";
+import { getDocs, query, collection, where } from "firebase/firestore";
+import {
+  updateEmail,
+  reauthenticateWithCredential,
+  EmailAuthProvider,
+} from "firebase/auth";
+
 import { auth } from "../config/firebase";
+import { Riple, TrophySpin } from "react-loading-indicators";
 
 export const Settings = () => {
   const [error, setError] = useState("");
@@ -40,6 +47,7 @@ export const Settings = () => {
   const [categories, setCategories] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [imgLoading, setimgLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -69,8 +77,6 @@ export const Settings = () => {
       console.error("Error updating user data:", err);
     }
   };
-
-  // Getting all the data
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -102,6 +108,86 @@ export const Settings = () => {
 
     fetchUserData();
   }, []);
+
+  //Download User Data
+  const downloadUserData = async () => {
+    const uid = auth.currentUser?.uid;
+    if (!uid) return alert("User not logged in.");
+
+    try {
+      // Get profile
+      const userDoc = await getDoc(doc(db, "users", uid));
+      const userProfile = userDoc.exists() ? userDoc.data() : {};
+
+      // Get expenses
+      const expenseSnap = await getDocs(
+        query(collection(db, "expense"), where("uid", "==", uid))
+      );
+      const expenses = expenseSnap.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      // Get salaries
+      const salarySnap = await getDocs(
+        query(collection(db, "monthly_salary"), where("uid", "==", uid))
+      );
+      const salaries = salarySnap.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      // Combine data
+      const allData = {
+        profile: userProfile,
+        expenses,
+        monthly_salary: salaries,
+      };
+
+      // Convert to JSON and trigger download
+      const blob = new Blob([JSON.stringify(allData, null, 2)], {
+        type: "application/json",
+      });
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `user-data-${uid}.json`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+
+      console.log(" Download started");
+    } catch (err) {
+      console.error(" Failed to download user data:", err);
+      alert("Failed to export data.");
+    }
+  };
+  const cloudName = import.meta.env.VITE_CLOUDINARY_NAME;
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setimgLoading(true);
+    const data = new FormData();
+    data.append("file", file);
+    data.append("upload_preset", "upload_image_cloudinary");
+    data.append("cloud_name", cloudName);
+
+    const res = await fetch(
+      `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+      {
+        method: "POST",
+        body: data,
+      }
+    );
+    const uploadedImageURL = await res.json();
+    console.log("Cloudinary return JSSON:", uploadedImageURL.url);
+    setImage(uploadedImageURL.url);
+
+    console.log(file);
+    setimgLoading(false);
+  };
   return (
     <div>
       <nav className="nav-bar">
@@ -148,11 +234,24 @@ export const Settings = () => {
             value={profession}
           />
           <label className="settings-subtitle">PROFILE IMAGE </label>
-          <input
-            type="text"
-            onChange={(e) => setImage(e.target.value)}
-            value={image}
-          />
+          <div className="upload-image">
+            <input type="file" onChange={handleFileUpload} />
+            {imgLoading ? (
+              <TrophySpin
+                color="#ff0000"
+                size="small"
+                text="Loading"
+                textColor="#000000"
+              />
+            ) : (
+              <Riple
+                color="#000000"
+                size="medium"
+                text="Upload "
+                textColor="#000000"
+              />
+            )}
+          </div>
 
           <label className="settings-subtitle-finance">PAYMENT RATE</label>
           <div className="radio-group">
@@ -220,9 +319,7 @@ export const Settings = () => {
             id="categories"
             type="text"
             value={categories}
-            onChange={
-              (e) => setCategories(e.target.value.replace(/\s+/g, "")) // remove spaces
-            }
+            onChange={(e) => setCategories(e.target.value.replace(/\s+/g, ""))}
             pattern="^[a-zA-Z]+(,[a-zA-Z]+)*$"
             title="Enter words separated by commas with no spaces (e.g. coffee,gym,books)"
             placeholder="e.g. coffee,gym,books"
@@ -236,17 +333,16 @@ export const Settings = () => {
             onChange={(e) => setEmail(e.target.value)}
           />
           <label className="settings-subtitle">PASSWORD</label>
-          <input
-            type="password"
-            placeholder={auth.currentUser?.password || "Enter past password"}
-          />
+
           <input
             type="password"
             placeholder={auth.currentUser?.password || "Enter new password"}
             onChange={(e) => setPassword(e.target.value)}
           />
           <button type="submit">SUBMIT</button>
-          <button type="button">EXPORT ALL DATA </button>
+          <button type="button" onClick={downloadUserData}>
+            EXPORT ALL DATA{" "}
+          </button>
         </form>
       </div>
     </div>

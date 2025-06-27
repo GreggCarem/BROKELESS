@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { collection, getDocs, where, query } from "firebase/firestore";
-
+import { getCurrentUserData } from "../utils/getUserData";
 import { db } from "../config/firebase";
 import "../style/transaction-list.scss";
 
@@ -40,6 +40,28 @@ export default function TransactionList({ transactions }) {
     fetchExpenses();
   }, [currentUser]);
 
+  // Custom Currency
+  const [userData, setUserData] = useState(null);
+  useEffect(() => {
+    const loadUserData = async () => {
+      const data = await getCurrentUserData();
+      if (data) {
+        setUserData(data);
+      }
+    };
+    loadUserData();
+  }, []);
+
+  let currencyIcon = "";
+
+  if (userData?.currency === "EUR") {
+    currencyIcon = "€";
+  } else if (userData?.currency === "USD") {
+    currencyIcon = "$";
+  } else if (userData?.currency === "GBP") {
+    currencyIcon = "£";
+  }
+
   return (
     <div className="transaction-list">
       <h2 className="transaction-list-title">Your Transactions</h2>
@@ -54,7 +76,8 @@ export default function TransactionList({ transactions }) {
               </span>
               <span className="transaction-label">{expense.label}</span>
               <span className="transaction-amount">
-                {expense.type === "expense" ? "-" : "+"} €{expense.price}
+                {expense.type === "expense" ? "-" : "+"} {currencyIcon}
+                {expense.price}
               </span>
               <span className="transaction-date">
                 {expense.createdAt?.toDate().toLocaleDateString("en-US", {
