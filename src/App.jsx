@@ -5,6 +5,7 @@ import AuthProvider from "./context/AuthContext.jsx";
 import { Routes, Route } from "react-router-dom";
 import SignUp from "./pages/SignUp.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import Settings from "./pages/Settings.jsx";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
               <Route path="/sign-up" element={<SignUp />} />
               <Route element={<ProtectedRoute />}>
                 <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/settings" element={<Settings />} />
               </Route>
             </Routes>
           </AuthProvider>

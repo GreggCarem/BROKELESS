@@ -1,13 +1,15 @@
 import "../style/new-transaction.scss";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { db } from "../config/firebase";
 import { collection, addDoc } from "firebase/firestore";
 import { auth } from "../config/firebase";
+import { getCurrentUserData } from "../utils/getUserData";
 
 export default function NewTransactions({ onSubmit }) {
   const [type, setType] = useState("");
   const [price, setPrice] = useState("");
   const [label, SetLabel] = useState("");
+  const [userData, setUserData] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,6 +39,18 @@ export default function NewTransactions({ onSubmit }) {
   function handleLabel(e) {
     SetLabel(e.target.value);
   }
+  // Custom Categories
+
+  useEffect(() => {
+    const loadUserData = async () => {
+      const data = await getCurrentUserData();
+      if (data) {
+        setUserData(data);
+      }
+    };
+    loadUserData();
+  }, []);
+  const categoriesArray = userData?.categories?.split(",") || [];
 
   return (
     <div className="transaction ">
@@ -80,12 +94,18 @@ export default function NewTransactions({ onSubmit }) {
         <div className="transaction-field">
           <h3 className="transaction-field-text">LABEL</h3>
           <input
+            list="category-options"
             className="transaction-field-input"
             name="label"
             type="text"
             value={label}
             onChange={handleLabel}
           />
+          <datalist id="category-options">
+            {categoriesArray.map((category) => (
+              <option key={category} value={category} />
+            ))}
+          </datalist>
         </div>
         <button className="transaction-field-btn-submit" type="submit">
           SUBMIT

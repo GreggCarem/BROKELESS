@@ -9,6 +9,7 @@ import { useAuth } from "../context/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import { collection, getDocs, where, query } from "firebase/firestore";
 import { db } from "../config/firebase";
+import { getCurrentUserData } from "../utils/getUserData";
 
 export default function Dashboard() {
   const [elementVisible, setElementVisible] = useState(false);
@@ -43,7 +44,6 @@ export default function Dashboard() {
       id: doc.id,
       ...doc.data(),
     }));
-    console.log(monthly_salary_data);
 
     setSalary(monthly_salary_data);
   };
@@ -96,22 +96,68 @@ export default function Dashboard() {
     }
   }
 
+  function handleSettings() {
+    navigate("/settings");
+  }
+
+  // Custom Categories
+  const [userData, setUserData] = useState(null);
+  useEffect(() => {
+    const loadUserData = async () => {
+      const data = await getCurrentUserData();
+      if (data) {
+        setUserData(data);
+      }
+    };
+    loadUserData();
+  }, []);
+
   return (
     <div className="dashboard-container">
       <nav className="nav-bar">
-        <h1 className="nav-bar-tittle">BROKLESS</h1>
-        <button
-          variant="link"
-          onClick={handleLogout}
-          className="nav-bar-logout"
-        >
-          LOG OUT{" "}
-        </button>
+        <div className="nav-bar-left">
+          <h1 className="nav-bar-tittle">BROKLESS</h1>
+        </div>
+
+        <div className="nav-bar-right">
+          <button
+            varient="link"
+            className="nav-bar-settings"
+            onClick={handleSettings}
+          >
+            {!userData?.image ? (
+              <FontAwesomeIcon
+                className="nav-bar-settings-icon"
+                icon={faGear}
+              />
+            ) : (
+              userData.image && (
+                <img
+                  className="nav-bar-settings-icon"
+                  src={userData.image}
+                  alt={`${userData.name}'s profile`}
+                  style={{
+                    width: "50px",
+                    height: "50px",
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                    margin: "auto",
+                  }}
+                />
+              )
+            )}
+          </button>
+          <button
+            variant="link"
+            onClick={handleLogout}
+            className="nav-bar-logout"
+          >
+            LOG OUT{" "}
+          </button>
+        </div>
       </nav>
       <div className="main-info">
         <div className="main-info-row">
-          {/* <h2>Welcome:</h2>
-          {currentUser.email} */}
           <div className="main-info-column">
             <h2 className="main-info-tittle">INCOME </h2>
             <h2 className="main-info-subtitle">{totalIncome} EUR </h2>

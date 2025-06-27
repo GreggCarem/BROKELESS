@@ -1,0 +1,102 @@
+.settings-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4rem 1rem;
+}
+
+.settings-form {
+    background-color: white;
+    border-radius: 1rem;
+    padding: 3rem 4rem;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    font-family: "Space Grotesk", sans-serif;
+}
+
+.settings-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    text-align: center;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.settings-subtitle {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #333;
+}
+.settings-subtitle-finance {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #333;
+    margin: auto;
+    margin-top: 1rem;
+}
+
+.settings-form input[type="text"],
+.settings-form input[type="password"] {
+    padding: 0.7rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+.settings-form input[type="radio"] {
+    margin-left: 0.5rem;
+    transform: scale(1.3);
+}
+
+.settings-form button {
+    background-color: #333;
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 0.6rem;
+    padding: 0.8rem 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+        background-color: #555;
+        transform: scale(1.05);
+    }
+}
+
+.radio-group {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 0.7rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+
+    label {
+        font-size: 1rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+
+        input[type="radio"] {
+            accent-color: #333;
+        }
+    }
+}
+
+.settings-input {
+    padding: 0.5rem 2rem;
+
+    border: 1px solid #aaa;
+    border-radius: 5px;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 1rem;
+}
