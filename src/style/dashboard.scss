@@ -34,7 +34,7 @@ body {
         justify-content: space-evenly;
         align-items: center;
     }
-    &-left{
+    &-left {
         display: flex;
         gap: 2rem;
     }
@@ -154,6 +154,7 @@ body {
     background-color: #333;
     color: #dadada;
     min-height: 40rem;
+    padding-bottom: 2rem;
 
     &-header {
         display: flex;

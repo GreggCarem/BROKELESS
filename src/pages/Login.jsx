@@ -48,8 +48,9 @@ export default function Login() {
       <button disabled={loading} className="login-submit_btn" type="submit">
         LOGIN
       </button>
+      <br />
       <div>
-        NEED AN ACCOUNT <Link to="/sign-up">SIGN UP</Link>{" "}
+        NEED AN ACCOUNT <Link to="/sign-up" >SIGN UP</Link>{" "}
       </div>
       {error && <p className="">{error}</p>}
     </form>

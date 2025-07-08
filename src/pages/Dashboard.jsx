@@ -3,13 +3,14 @@ import NewTransactions from "../components/NewTransactions";
 import "../style/dashboard.scss";
 import TransactionList from "../components/TransactionList";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGear } from "@fortawesome/free-solid-svg-icons";
+import { faGear, faSun } from "@fortawesome/free-solid-svg-icons";
 import MonthInput from "../components/MonthInput";
 import { useAuth } from "../context/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import { collection, getDocs, where, query } from "firebase/firestore";
 import { db } from "../config/firebase";
 import { getCurrentUserData } from "../utils/getUserData";
+import Footer from "../components/Footer"
 
 export default function Dashboard() {
   const [elementVisible, setElementVisible] = useState(false);
@@ -17,7 +18,7 @@ export default function Dashboard() {
   const [salary, setSalary] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const { currentUser } = useAuth();
-  
+  const [mode, setMode] = useState(true);
 
   const fetchExpenses = async () => {
     if (!currentUser) return;
@@ -100,6 +101,13 @@ export default function Dashboard() {
   function handleSettings() {
     navigate("/settings");
   }
+  function handleMode() {
+    const newMode = setMode;
+    setMode(newMode);
+    if (mode === true) {
+      newMode = false
+    }
+  }
 
   // Custom Categories
   const [userData, setUserData] = useState(null);
@@ -113,17 +121,15 @@ export default function Dashboard() {
     loadUserData();
   }, []);
 
-
   // Clock
-  let time  = new Date().toLocaleTimeString()
+  let time = new Date().toLocaleTimeString();
 
-  const [ctime,setTime] = useState(time)
-  const UpdateTime=()=>{
-    time =  new Date().toLocaleTimeString()
-    setTime(time)
-  }
-  setInterval(UpdateTime)
- 
+  const [ctime, setTime] = useState(time);
+  const UpdateTime = () => {
+    time = new Date().toLocaleTimeString();
+    setTime(time);
+  };
+  setInterval(UpdateTime);
 
   return (
     <div className="dashboard-container">
@@ -134,6 +140,7 @@ export default function Dashboard() {
         <h1>{ctime}</h1>
 
         <div className="nav-bar-right">
+       
           <button
             varient="link"
             className="nav-bar-settings"
@@ -239,6 +246,9 @@ export default function Dashboard() {
         </div>
         <TransactionList transactions={transactions} />
       </div>
+
+      <Footer />
     </div>
+    
   );
 }

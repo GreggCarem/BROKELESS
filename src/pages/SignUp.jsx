@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 export default function SignUp() {
   const emailRef = useRef();
   const passwordRef = useRef();
-  const { signup,  } = useAuth();
+  const { signup } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -17,12 +17,13 @@ export default function SignUp() {
       setError("");
       setLoading(true);
       await signup(emailRef.current.value, passwordRef.current.value);
-        navigate("/dashboard"); 
+      navigate("/dashboard");
     } catch (error) {
-      console.login("Signup error:", error); // for dev console
-      setError("FAILED TO SIGN UP"); // show actual Firebase error
+      console.login("Signup error:", error);
+      setError("FAILED TO SIGN UP");
     }
   }
+
   return (
     <form className="login-container " onSubmit={handleSubmit}>
       <h1 className="login-tittle">BROKELESS</h1>
@@ -47,6 +48,7 @@ export default function SignUp() {
       <button disabled={loading} className="login-submit_btn" type="submit">
         SIGN UP
       </button>
+      <br />
       <div>
         HAVE AN ACCOUNT? <Link to="/">LOGIN</Link>{" "}
       </div>
