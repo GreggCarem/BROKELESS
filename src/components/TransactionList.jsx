@@ -9,6 +9,15 @@ export default function TransactionList() {
   const [expenses, setExpenses] = useState([]);
   const { currentUser } = useAuth();
   const [userData, setUserData] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterType, setFilterType] = useState("all");
+  const [selectedMonth, setSelectedMonth] = useState(() => {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}`;
+  });
 
   // Listen to transactions in real time
   useEffect(() => {
@@ -74,21 +83,70 @@ export default function TransactionList() {
     }, {});
   };
 
-  const groupedExpenses = groupByMonth(expenses);
+  const filteredExpenses = expenses.filter((expense) => {
+    const matchesLabel = expense.label?.toLowerCase().includes(searchTerm);
+    const matchesType =
+      filterType === "all" ||
+      expense.selectedType === filterType ||
+      expense.type === filterType;
+
+    return matchesLabel && matchesType;
+  });
+  const groupedExpenses = groupByMonth(filteredExpenses);
 
   // Sort months DESCENDING
   const sortedMonths = Object.keys(groupedExpenses).sort(
     (a, b) => new Date(b) - new Date(a)
   );
 
+  // Find the index of selectedMonth
+  const selectedIndex = sortedMonths.indexOf(selectedMonth);
+
+  const monthsToShow = [];
+  if (selectedIndex !== -1) {
+    monthsToShow.push(sortedMonths[selectedIndex]);
+    if (selectedIndex + 1 < sortedMonths.length) {
+      monthsToShow.push(sortedMonths[selectedIndex + 1]);
+    }
+  } else if (sortedMonths.length > 0) {
+    monthsToShow.push(sortedMonths[0]);
+    if (sortedMonths[1]) monthsToShow.push(sortedMonths[1]);
+  }
+
+  const totalSum = filteredExpenses.reduce((sum, tx) => {
+    return tx.type === "expense" ? sum - tx.price : sum + tx.price;
+  }, 0);
+
   return (
     <div className="transaction-list">
-      <h2 className="transaction-list-title">Your Transactions</h2>
+      <div className="transaction-list-header">
+        <h2 className="transaction-list-header-title">Your Transactions</h2>
+        <div className="transaction-list-filters">
+          <input
+            type="text"
+            placeholder="Search by label..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
+            className="transaction-list-filter-search"
+          />
+        </div>
+        <div className="transaction-list-filter-input">
+          <input
+            type="month"
+            id="start"
+            name="start"
+            min="2018-03"
+            className="transaction-list-filter-input-month"
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(e.target.value)}
+          />
+        </div>
+      </div>
 
       {expenses.length === 0 ? (
         <p className="transaction-list-title">No transactions found.</p>
       ) : (
-        sortedMonths.map((monthKey) => {
+        monthsToShow.map((monthKey) => {
           const [year, month] = monthKey.split("-");
           const monthLabel = new Date(`${year}-${month}-01`).toLocaleString(
             "en-US",
@@ -128,15 +186,14 @@ export default function TransactionList() {
                         {expense.price}
                       </span>
                       <span className="transaction-date">
-                        {expense.createdAt
-                          ?.toDate?.()
-                          .toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "2-digit",
-                            day: "2-digit",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
+                        {expense.createdAt?.toDate?.().toLocaleString("en-GB", {
+                          year: "numeric",
+                          month: "2-digit",
+                          day: "2-digit",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: false,
+                        })}
                       </span>
                     </li>
                   ))}
