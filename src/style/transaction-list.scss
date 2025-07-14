@@ -18,11 +18,12 @@
 }
 
 .transaction-item.expense {
-    color: rgb(255, 0, 0);
+    color: #950303ff;
+    font-size: 1.1rem;
 }
 
 .transaction-item.income {
-    color: #00ff0d;
+    color: #018420ff;
 }
 
 .transaction-type {
@@ -32,6 +33,11 @@
 
 .transaction-label {
     flex: 1;
+}
+.transaction-label-2 {
+    flex: 1;
+    font-style: italic;
+   
 }
 
 .transaction-amount {
@@ -43,5 +49,3 @@
     margin-left: 1rem;
     white-space: nowrap;
 }
-
-

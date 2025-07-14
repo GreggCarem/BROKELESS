@@ -8,11 +8,8 @@ import "../style/settings.scss";
 import { db } from "../config/firebase";
 import { setDoc } from "firebase/firestore";
 import { getDocs, query, collection, where } from "firebase/firestore";
-import {
-  updateEmail,
-  reauthenticateWithCredential,
-  EmailAuthProvider,
-} from "firebase/auth";
+import { EmailAuthProvider } from "firebase/auth";
+import Alert from "@mui/material/Alert";
 
 import { auth } from "../config/firebase";
 import { Riple, TrophySpin } from "react-loading-indicators";
@@ -48,6 +45,7 @@ export const Settings = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [imgLoading, setimgLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -73,6 +71,7 @@ export const Settings = () => {
         { merge: true }
       );
       console.log("User data updated successfully.");
+      setSuccess(true);
     } catch (err) {
       console.error("Error updating user data:", err);
     }
@@ -188,6 +187,15 @@ export const Settings = () => {
     console.log(file);
     setimgLoading(false);
   };
+
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => {
+        setSuccess(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [success]);
   return (
     <div>
       <nav className="nav-bar">
@@ -238,18 +246,26 @@ export const Settings = () => {
             <input type="file" onChange={handleFileUpload} />
             {imgLoading ? (
               <TrophySpin
-                color="#ff0000"
+                color="#000000ff"
                 size="small"
                 text="Loading"
                 textColor="#000000"
               />
             ) : (
-              <Riple
-                color="#000000"
-                size="medium"
-                text="Upload "
-                textColor="#000000"
-              />
+              image && (
+                <img
+                  className="nav-bar-settings-icon"
+                  src={image}
+                  alt={`${name}'s profile`}
+                  style={{
+                    width: "50px",
+                    height: "50px",
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                    margin: "auto",
+                  }}
+                />
+              )
             )}
           </div>
 
@@ -340,6 +356,11 @@ export const Settings = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
           <button type="submit">SUBMIT</button>
+          {success && (
+            <Alert className="alert-banner" severity="success">
+              Your account has been updated successfully!
+            </Alert>
+          )}
           <button type="button" onClick={downloadUserData}>
             EXPORT ALL DATA{" "}
           </button>

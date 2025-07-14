@@ -79,6 +79,12 @@ body {
         font-weight: 500;
         color: #333;
         margin-bottom: -1rem;
+        border: black 2rem;
+        background-color: #000000;
+        border-radius: 18px;
+        width: 13rem;
+        text-align: center;
+        color: #dadada;
     }
     &-subtitle {
         font-size: 2.5rem;
@@ -90,6 +96,16 @@ body {
         flex-direction: row;
         align-items: center;
         justify-content: space-around;
+        align-items: baseline;
+
+        &-1 {
+            display: flex;
+            flex-direction: row;
+        }
+        &-3 {
+            display: flex;
+            flex-direction: row;
+        }
 
         &-bc {
             background-color: #333;
@@ -182,4 +198,77 @@ body {
             border: none;
         }
     }
+}
+
+.transaction-field-input-month[type="month"] {
+    background: #dadada;
+    border: 1px solid #dadada;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    width: 10rem;
+    font-size: 1rem;
+    cursor: pointer;
+
+    &:focus {
+        border-color: #333;
+        outline: none;
+    }
+}
+
+.transaction-field-month {
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 11rem;
+    margin-bottom: -1rem;
+}
+
+.main-info-row-1 {
+    display: flex !important;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    align-items: baseline;
+    color: #000000;
+}
+
+.slider-page-1 {
+    margin: auto;
+}
+
+.main-info-row-3 {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-info-column {
+    flex: 0 0 auto;
+}
+
+.pie-chart-wrapper {
+    flex: 0 0 auto;
+    width: 50%;
+}
+
+.custom-arrow {
+    cursor: pointer;
+    font-size: 4rem;
+    z-index: 2;
+
+    scale: 2;
+    transition: 0.2s ease-in-out;
+
+    &.next-arrow {
+        right: 80px;
+    }
+
+    &.prev-arrow {
+        left: 80px;
+    }
+}
+
+.custom-arrow::before {
+    color: #333 !important;
+    font-size: 25px !important;
 }

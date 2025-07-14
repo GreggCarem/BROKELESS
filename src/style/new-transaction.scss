@@ -1,37 +1,45 @@
 .transaction {
     position: absolute;
-    right: 0px;
+    right: 5px;
     display: flex;
     background-color: #dadada;
     width: 20rem;
-    height: 20rem;
+    height: 25rem;
     flex-direction: column;
     flex-wrap: nowrap;
     align-content: center;
-    justify-content: center;
+
     align-items: center;
     border-radius: 15px;
     margin-top: 0.3rem;
     font-family: "Space Grotesk", sans-serif;
-    
+
     &-tittle {
         font-size: 1.8rem;
         font-weight: 500;
         color: #333;
-        margin-bottom: 1rem;
+        margin-top: 3rem;
+        margin-bottom: 2rem;
     }
     &-form {
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
+        // justify-content: center;
     }
 
     &-field {
         display: flex;
         align-items: baseline;
         gap: 1.5rem;
+        margin-top: -1rem;
         &-1 {
+            display: flex;
+            gap: 3rem;
+            margin-bottom: 1.5rem;
+        }
+        &-2 {
+            margin-top: -0.5rem;
             display: flex;
             gap: 3rem;
         }
@@ -52,11 +60,14 @@
         }
         &-btn {
             border-radius: 5px;
-            border: none;
+            border: #333 2px solid;
             font-size: 1.5rem;
             font-weight: 500;
             color: #333;
             background-color: transparent;
+            padding: 0.4rem 0.5rem;
+            height: auto;
+            cursor: pointer;
 
             &.active {
                 background-color: #9f9f9f;
@@ -69,13 +80,15 @@
         }
 
         &-btn-submit {
-            margin-top: 2rem;
+            margin-top: 1rem;
             background-color: transparent;
             border-radius: 5px;
             border: none;
             font-size: 1.5rem;
             font-weight: 500;
             color: #333;
+            position: absolute;
+            bottom: 2rem;
         }
     }
 }
